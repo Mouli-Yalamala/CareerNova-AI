@@ -1,0 +1,99 @@
+# Sequential task definitions for the job application pipeline
+tasks:
+  job_scraping_task:
+    description: |
+      Scrape job listings matching the user's {job_query}. Extract:
+      - job_title, company_name, location, salary_range
+      - required_skills (list), experience_required (years)
+      - job_description (full text), posting_url
+      Return clean JSON with 3-5 relevant job postings.
+    expected_output: |
+      JSON array of job postings:
+      [
+        {
+          "job_title": "...",
+          "company_name": "...",
+          "skills_required": ["Python", "FastAPI", "CrewAI"],
+          "experience_years": 3,
+          "salary_range": "$80k-$120k",
+          "location": "Remote",
+          "description": "...",
+          "url": "..."
+        }
+      ]
+    agent: job_scraper_agent
+    input_params: 
+      - job_query
+    tools: 
+      - web_scraper.WebScraperTool
+
+  resume_parsing_task:
+    description: |
+      Parse the raw {resume_text} and extract structured candidate profile:
+      - skills (technical + soft skills)
+      - work_experience (job titles, companies, years)
+      - education (degrees, institutions)
+      - total_experience_years
+      - profile_summary
+      - profile_summary
+    expected_output: |
+      STRICT JSON ONLY. No markdown. No comments.
+      {
+        "candidate_name": "...",
+        "skills": ["Python", "FastAPI"],
+        "experience": [{"title": "...", "company": "...", "duration": "..."}],
+        "education": [{"degree": "...", "institution": "...", "year": "..."}],
+        "total_years": 5,
+        "summary": "..."
+      }
+    agent: resume_analyzer_agent
+    input_params:
+      - resume_text
+    tools:
+      - resume_parser.ResumeParserTool
+
+  skill_gap_analysis_task:
+    description: |
+      Compare job_requirements from job_scraping_task with candidate_skills from resume_parsing_task.
+      Compute:
+      - overall_match_score (0-100%)
+      - missing_skills (prioritized list)
+      - strengths (candidate advantages)
+      - learning_roadmap (3-5 step plan with resources)
+    expected_output: |
+      Gap analysis JSON:
+      {
+        "match_score": 78,
+        "missing_skills": ["Docker", "Kubernetes"],
+        "strengths": ["CrewAI expertise", "FastAPI"],
+        "roadmap": [
+          {"skill": "Docker", "resources": ["docker.com", "3hr tutorial"]},
+          ...
+        ]
+      }
+    agent: skill_gap_analyzer_agent
+    input_params:
+      - job_scrapings
+      - resume_data
+    tools:
+      - skill_gap_utils.SkillGapAnalyzerTool
+
+  application_generation_task:
+    description: |
+      Generate complete application package using the provided JSON data:
+      - job_data: {job_data}
+      - resume_data: {resume_data}
+      Create:
+      - ATS-optimized resume text
+      - Personalized cover letter
+      - Recruiter email template
+      - LinkedIn connection message
+    expected_output: |
+      The raw JSON returned by the application_formatter tool.
+    agent: application_generator_agent
+    input_params:
+      - job_scrapings
+      - resume_data
+    tools:
+      - application_formatter.ApplicationFormatterTool
+

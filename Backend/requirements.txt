@@ -1,0 +1,26 @@
+# ULTRA MINIMAL - NO CONFLICTS
+crewai==1.9.3
+crewai_tools==1.9.3
+fastapi
+uvicorn[standard]
+python-dotenv
+pyyaml
+python-multipart3
+litellm
+
+
+# Web Scraping
+requests
+beautifulsoup4
+
+# Resume Parsing
+PyPDF2
+python-docx
+
+# Data Processing
+pandas
+python-levenshtein
+nltk
+
+# FREE Groq Llama
+
