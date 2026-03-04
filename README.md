@@ -118,5 +118,4 @@ The Frontend will be running typically on `http://localhost:5173`. It expects th
 ## 🤝 Contributing
 Contributions, issues, and feature requests are welcome! Feel free to check issues page.
 
-## 📄 License
-[Add your specific license here, e.g., MIT]
+Built with ❤️ by Mouli Yalamala
